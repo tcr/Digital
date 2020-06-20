@@ -83,6 +83,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+import org.json.JSONObject;
+
 import static de.neemann.digital.draw.shapes.GenericShape.SIZE;
 import static de.neemann.gui.ToolTipAction.getCTRLMask;
 import static javax.swing.JOptionPane.showInputDialog;
@@ -1884,6 +1886,23 @@ public final class Main extends JFrame implements ClosingWindowListener.ConfirmS
     @Override
     public void stop() {
         SwingUtilities.invokeLater(this::ensureModelIsStopped);
+    }
+
+    @Override
+    public String measure() throws RemoteException {
+        if (model != null) {
+            try {
+                JSONObject signals = new JSONObject();
+                SwingUtilities.invokeAndWait(() -> {
+                    for (Signal s : model.getSignals())
+                        signals.put(s.getName(), s.getValue().getValue());
+                });
+                return signals.toString();
+            } catch (InterruptedException | InvocationTargetException e) {
+                throw new RemoteException("error performing a single step " + e.getMessage());
+            }
+        }
+        return null;
     }
     //**********************
     // remote interface end

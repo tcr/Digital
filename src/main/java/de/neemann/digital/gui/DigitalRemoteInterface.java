@@ -54,4 +54,12 @@ public interface DigitalRemoteInterface {
      * @throws RemoteException RemoteException
      */
     void stop() throws RemoteException;
+
+    /**
+     * returns all signal state
+     *
+     * @return JSON encoded signal map
+     * @throws RemoteException RemoteException
+     */
+    String measure() throws RemoteException;
 }
